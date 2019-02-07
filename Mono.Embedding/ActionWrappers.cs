@@ -6,11 +6,39 @@ namespace Mono.Embedding
     /// Automatically generated helper methods for UniversalDelegateServices.
     /// </summary>
     [Serializable]
-    internal static class ActionWrappers
+    internal class ActionWrappers
     {
+        UniversalDelegate _UniversalDelegate;
+        int _Arity;
+
+        public ActionWrappers(UniversalDelegate d, int arity)
+        {
+            _UniversalDelegate = d;
+            _Arity = arity;
+        }
+
+        public void Invocation()
+        {
+            switch (_Arity) {
+                case 0:
+                    _UniversalDelegate(new object[] { });
+                    break;
+
+                default:
+                    new InvalidOperationException(string.Format("No invocation for arity {0}", _Arity));
+                    break;
+            }
+        }
+
+        public static Action Create(UniversalDelegate d, int arity)
+        {
+            ActionWrappers wrappers = new ActionWrappers(d, 0);
+            return new Action(wrappers.Invocation);
+        }
+
         public static Action Create0(UniversalDelegate d)
         {
-            return () => d(new object[] {});
+            return Create(d, 0);
         }
 
         public static Action<T1> Create1<T1>(UniversalDelegate d)
