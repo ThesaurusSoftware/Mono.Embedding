@@ -102,6 +102,7 @@ namespace Mono.Embedding
     /// <summary>
     /// Represents a UniversalDelegate handler implemented in native code.
     /// </summary>
+    [Serializable]
     public class UniversalDelegateWrapper
     {
         readonly IntPtr context;
