@@ -5,40 +5,38 @@ namespace Mono.Embedding
     /// <summary>
     /// Automatically generated helper methods for UniversalDelegateServices.
     /// </summary>
+    [Serializable]
     internal class FuncWrappers
     {
-        UniversalDelegate _UniversalDelegate;
+        private UniversalDelegate UniversalDelegate;
 
         public FuncWrappers(UniversalDelegate d)
         {
-            _UniversalDelegate = d;
+            UniversalDelegate = d;
         }
 
         public static Func<TResult> Create0<TResult>(UniversalDelegate d)
         {
-            FuncWrappers wrappers = new FuncWrappers(d);
-            return new Func<TResult>(wrappers.Invoke0<TResult>);
+            return new Func<TResult>(new FuncWrappers(d).Invoke0<TResult>);
         }
 
+        // serialisable forms
         public TResult Invoke0<TResult>()
         {
-            return (TResult)(_UniversalDelegate(new object[] { }) ?? default(TResult));
+            return (TResult)(UniversalDelegate(new object[] { }) ?? default(TResult));
         }
 
         public static Func<T1, TResult> Create1<T1, TResult>(UniversalDelegate d)
         {
-            FuncWrappers wrappers = new FuncWrappers(d);
-            return new Func<T1, TResult>(wrappers.Invoke1<T1, TResult>);
+            return new Func<T1, TResult>(new FuncWrappers(d).Invoke1<T1, TResult>);
         }
 
         public TResult Invoke1<T1, TResult>(T1 a1)
         {
-            Console.WriteLine($"Invoking with {a1.ToString()}");
-            object result = _UniversalDelegate(new object[] { a1 });
-            Console.WriteLine($"Invocation result {result.ToString()}");
-            return (TResult)(result ?? default(TResult));
+            return (TResult)(UniversalDelegate(new object[] { a1 }) ?? default(TResult));
         }
 
+        // legacy forms - serialization will fail
         public static Func<T1, T2, TResult> Create2<T1, T2, TResult>(UniversalDelegate d)
         {
             return (a1, a2) => (TResult) (d(new object[] {a1, a2}) ?? (object) default(TResult));

@@ -8,39 +8,25 @@ namespace Mono.Embedding
     [Serializable]
     internal class ActionWrappers
     {
-        UniversalDelegate _UniversalDelegate;
-        int _Arity;
+        private UniversalDelegate UniversalDelegate;
 
-        public ActionWrappers(UniversalDelegate d, int arity)
+        public ActionWrappers(UniversalDelegate d)
         {
-            _UniversalDelegate = d;
-            _Arity = arity;
+            UniversalDelegate = d;
         }
 
-        public void Invocation()
+        // serialisable forms
+        public void Invoke0()
         {
-            switch (_Arity) {
-                case 0:
-                    _UniversalDelegate(new object[] { });
-                    break;
-
-                default:
-                    new InvalidOperationException(string.Format("No invocation for arity {0}", _Arity));
-                    break;
-            }
-        }
-
-        public static Action Create(UniversalDelegate d, int arity)
-        {
-            ActionWrappers wrappers = new ActionWrappers(d, 0);
-            return new Action(wrappers.Invocation);
+            UniversalDelegate(new object[] { });
         }
 
         public static Action Create0(UniversalDelegate d)
         {
-            return Create(d, 0);
+            return new Action(new ActionWrappers(d).Invoke0);
         }
 
+        // legacy forms - serialization will fail
         public static Action<T1> Create1<T1>(UniversalDelegate d)
         {
             return (a1) => d(new object[] {a1});
